@@ -1,0 +1,27 @@
+html,body{
+    overflow-x: hidden;   
+}
+
+#term{
+    width: 85%;
+    margin: 0 auto;
+}
+
+#subtitle{
+    margin-left: 13px;   
+}
+
+#resultsbox{
+    width: 90%;
+    height: 30%;
+    margin: auto;
+    position: fixed;
+    z-index: 20;
+    top: 0; left: 0; bottom: 0; right: 0;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+.serror{
+    border: 1px solid red;   
+}

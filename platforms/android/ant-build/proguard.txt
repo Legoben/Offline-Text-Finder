@@ -1,0 +1,3 @@
+# view AndroidManifest.xml #generated:7
+-keep class co.helloben.offline.CordovaApp { <init>(...); }
+

@@ -2,7 +2,7 @@ html,body{
     overflow-x: hidden;   
 }
 
-#term{
+#search{
     width: 85%;
     margin: 0 auto;
 }
@@ -11,17 +11,20 @@ html,body{
     margin-left: 13px;   
 }
 
-#resultsbox{
+.rpanel{
     width: 90%;
-    height: 30%;
-    margin: auto;
-    position: fixed;
-    z-index: 20;
-    top: 0; left: 0; bottom: 0; right: 0;
-    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
-    display: none;
+    margin: 20px auto;
+    
 }
 
 .serror{
     border: 1px solid red;   
+}
+
+#basedir{
+    width: 70%;
+}
+
+#dirsel{
+    text-align: center;
 }

@@ -34,9 +34,9 @@
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/img \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/js \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/css \
+/home/ben/Desktop/code/offline1/platforms/android/assets/www/files \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.dialogs \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.device \
-/home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/com.contraterrene.GapFile \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.file \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.file-transfer \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.dialogs/www \
@@ -45,8 +45,6 @@
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.dialogs/www/android/notification.js \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.device/www \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.device/www/device.js \
-/home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/com.contraterrene.GapFile/www \
-/home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/com.contraterrene.GapFile/www/gapfile.js \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.file/www \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.file/www/ProgressEvent.js \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/plugins/org.apache.cordova.file/www/Flags.js \
@@ -129,4 +127,8 @@
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/js/index.js \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/css/index.css \
 /home/ben/Desktop/code/offline1/platforms/android/assets/www/css/bootstrap.min.css \
+/home/ben/Desktop/code/offline1/platforms/android/assets/www/files/ipsum.txt \
+/home/ben/Desktop/code/offline1/platforms/android/assets/www/files/gberg.txt \
+/home/ben/Desktop/code/offline1/platforms/android/assets/www/files/GNU_TR.html \
+/home/ben/Desktop/code/offline1/platforms/android/assets/www/files/gpl-3.0.txt \
 /home/ben/Desktop/code/offline1/platforms/android/ant-build/AndroidManifest.xml \

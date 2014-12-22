@@ -1,7 +1,7 @@
 document.addEventListener('deviceready', devReady, false);
 
 var reader;
-
+var basedir;
 var currpath = ""
 
 function occurrences(string, subString, allowOverlapping) { //From http://stackoverflow.com/a/7924240
@@ -26,29 +26,63 @@ function occurrences(string, subString, allowOverlapping) { //From http://stacko
 
 function devReady() {
     console.log("DEVICE IS READY")
-    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, gotFile, fail);
+    
+    for (var key in cordova.file) {
+    console.log("HAI")
+    var dir = cordova.file[key];
+    if (dir == null){
+        continue   
+    }
+        
+    if(key == "externalRootDirectory"){
+        
+        $("#basedir").append("<option selected value='"+key+"'>"+dir+"</option")
+    } else {
+    
+        $("#basedir").append("<option value='"+key+"'>"+dir+"</option")
+    }
+    }
+
+    
+    
+    basedir = cordova.file.externalRootDirectory
+    window.resolveLocalFileSystemURL(basedir, gotFile, fail);
 
 }
 
 
 function success(entries) {
-    $("#dirdata").html("")
-
+    $("#seconddir").html("")
+    
+    
+    
     for (i = 0; i < entries.length; i++) {
         console.log(entries[i].name);
-        if (entries[i].isFile) {
+        
+        $("#seconddir").append("<option value='"+entries[i].fullPath+"' isfile='"+entries[i].isFile+"'>/"+entries[i].name+"</option>")
+        
+        
+        /*if (entries[i].isFile) {
             $("#dirdata").append("<tr><td>" + (i + 1) + "</td><td>" + entries[i].name + "</td><td> <i class='fa fa-search' onclick=\"search('" + entries[i].fullPath + "', true)\"</i> &nbsp; </td></tr>");
         } else {
             $("#dirdata").append("<tr><td>" + (i + 1) + "</td><td>" + entries[i].name + "</td><td> <i class='fa fa-search' onclick=\"search('" + entries[i].fullPath + "', false)\"</i> &nbsp;&nbsp;&nbsp; <i class='fa fa-arrow-right' onclick=\"getNextLevel('" + entries[i].fullPath + "')\"></i></td></tr>");
-        }
+        }*/
     }
 }
 
 
 
-function search(path, isfile) {
-    console.log(path)
-    console.log(cordova.file.externalRootDirectory + path.slice(1))
+function search() {
+    var ele = $("#seconddir option:selected")
+    
+    var path= ele.val()
+    if(ele.attr("isfile") == "true"){
+        var isfile = true;   
+    } else {
+        var isfile = false;   
+    }
+    
+        
     $("#term").removeClass("serror")
 
     var word = $("#term").val()
@@ -59,8 +93,9 @@ function search(path, isfile) {
 
         return;
     }
+    
 
-    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + path.slice(1), function (fs) {
+    window.resolveLocalFileSystemURL(basedir + path.slice(1), function (fs) {
         console.log(fs)
 
 
@@ -84,19 +119,21 @@ function search(path, isfile) {
                         console.log(num)
 
                         if (num != 0) {
-                            $("#resulttext").text("The word " + word + " was found " + num + " times in the file located at " + path)
+                            $("#resultsbox .resulttext").text("The word " + word + " was found " + num + " times in the file located at " + path)
+                             $("#resultsbox .panel").removeClass("panel-danger").addClass("panel-success")
                         } else {
-                            $("#resulttext").text("The word " + word + " was not found in the file located at " + path)
+                            $("#resultsbox .resulttext").text("The word " + word + " was not found in the file located at " + path)
+                            $("#resultsbox .panel").removeClass("panel-success").addClass("panel-danger")
                         }
                     } else {
                         //could not open file
 
-                        $("#resulttext").text("Could not read File")
+                        $("#resultsbox .resulttext").text("Could not read File")
+                        $("#resultsbox .panel").removeClass("panel-success").addClass("panel-danger")
                     }
 
                     console.log("here")
-                    $("#resultsbox").css("display", "block")
-
+                    $("#results").prepend($("#resultsbox").html())
                 };
 
                 reader.readAsText(file);
@@ -117,6 +154,13 @@ function search(path, isfile) {
                 var results = []
 
                 var done = 0;
+                
+                if(entries.length == 0){
+                       $("#resultsbox .resulttext").text("No files found in directory "+path+"!")
+                       $("#resultsbox .panel").removeClass("panel-success").addClass("panel-danger")
+                       $("#results").prepend($("#resultsbox").html())
+                       return
+                }
 
                 for (i = 0; i < entries.length; i++) {
                     if (entries[i].isDirectory) {
@@ -151,17 +195,23 @@ function search(path, isfile) {
                                     console.log(totalfiles, totalinstances, filelist, results)
 
                                     if (totalinstances == 0) {
-                                        $("#resulttext").text("The word " + word + " was not found in any of the " + entries.length + " files located at " + path)
+                                        $("#resultsbox .resulttext").text("The word " + word + " was not found in any of the " + entries.length + " files located at " + path)
+                                        $("#resultsbox .panel").removeClass("panel-success").addClass("panel-danger")
                                     } else if (totalfiles == 1) {
-                                        $("#resulttext").text("The word " + word + " was found one file, " + filelist[0] + ", " + totalinstances + " times. None of the other " + (entries.length - 1) + " files located at " + path + " contained it.")
+                                        $("#resultsbox .resulttext").text("The word " + word + " was found one file, " + filelist[0] + ", " + totalinstances + " times. None of the other " + (entries.length - 1) + " files located at " + path + " contained it.")
+                                        $("#resultsbox .panel").removeClass("panel-danger").addClass("panel-success")
                                     } else if (totalfiles > 1) {
-                                        $("#resulttext").html("The word " + word + " was found a total of " + totalinstances + " times in " + totalfiles + " files as shown below:<br/>")
+                                        $("#resultsbox .resulttext").html("The word " + word + " was found a total of " + totalinstances + " times in " + totalfiles + " files as shown below:<br/>")
+                                        $("#resultsbox .panel").removeClass("panel-danger").addClass("panel-success")
+                                        
+                                        
                                         for (i = 0; i < filelist.length; i++) {
-                                            $("#resulttext").append("<b>" + filelist[i] + ":</b> " + results[i] + " instances. <br/>")
+                                            $("#resultsbox .resulttext").append("<b>" + filelist[i] + ":</b> " + results[i] + " instances. <br/>")
+                                            $("#resultsbox .panel").removeClass("panel-failure").addClass("panel-success")
                                         }
                                     }
 
-                                    $("#resultsbox").css("display", "block")
+                                    $("#results").prepend($("#resultsbox").html())
                                 }
 
 
@@ -201,7 +251,7 @@ function getNextLevel(path) {
     }
 
     console.log(path)
-    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + path, gotFile, fail);
+    window.resolveLocalFileSystemURL(basedir + path, gotFile, fail);
 }
 
 function fail(error) {
@@ -210,11 +260,19 @@ function fail(error) {
 
 
 
+
 function gotFile(fileEntry) {
     console.log("FOUND FILES")
 
     var reader = fileEntry.createReader()
     reader.readEntries(success, fail);
+}
 
-
+function changeBase(ele){
+    var vari = $("option:selected", ele).text()
+    basedir = vari;
+    
+    window.resolveLocalFileSystemURL(basedir, gotFile, fail);
+    
+    consle.log("change")
 }

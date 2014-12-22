@@ -3,6 +3,7 @@ document.addEventListener('deviceready', devReady, false);
 var reader;
 var basedir;
 var currpath = ""
+var files = ["gberg.txt", "GNU_TR.html", "gpl-3.0.txt", "ipsum.txt"]
 
 function occurrences(string, subString, allowOverlapping) { //From http://stackoverflow.com/a/7924240
 
@@ -27,12 +28,16 @@ function occurrences(string, subString, allowOverlapping) { //From http://stacko
 function devReady() {
     console.log("DEVICE IS READY")
     
+    
+    
     for (var key in cordova.file) {
     console.log("HAI")
     var dir = cordova.file[key];
     if (dir == null){
         continue   
     }
+        
+     
         
     if(key == "externalRootDirectory"){
         
@@ -44,10 +49,10 @@ function devReady() {
     }
 
     
+    getDemo()
     
     basedir = cordova.file.externalRootDirectory
     window.resolveLocalFileSystemURL(basedir, gotFile, fail);
-
 }
 
 
@@ -58,8 +63,11 @@ function success(entries) {
     
     for (i = 0; i < entries.length; i++) {
         console.log(entries[i].name);
-        
-        $("#seconddir").append("<option value='"+entries[i].fullPath+"' isfile='"+entries[i].isFile+"'>/"+entries[i].name+"</option>")
+        if(entries[i].name == "OfflineDemoFiles"){
+            $("#seconddir").append("<option selected value='"+entries[i].fullPath+"' isfile='"+entries[i].isFile+"'>/"+entries[i].name+"</option>")
+        } else {
+            $("#seconddir").append("<option value='"+entries[i].fullPath+"' isfile='"+entries[i].isFile+"'>/"+entries[i].name+"</option>")
+        }
         
         
         /*if (entries[i].isFile) {
@@ -276,3 +284,21 @@ function changeBase(ele){
     
     consle.log("change")
 }
+
+function getDemo(){
+    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function(fs){
+        
+    fs.getDirectory("OfflineDemoFiles", {create: true, exclusive: true})
+    
+    for(var i = 0; i < files.length; i++){
+            $.ajax({"url":"files/"+files[i], async:false, success:function(data){
+                fs.getFile("OfflineDemoFiles/"+files[i],{create: true, exclusive: true},function(file){
+                    file.createWriter(function(writer){
+                        writer.write(data);
+                        
+                    }, function(e){console.log(e)})
+                }, function(e){console.log(e)})
+            }})   
+       }
+    }
+)}

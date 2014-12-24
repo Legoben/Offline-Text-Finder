@@ -25,6 +25,34 @@ function occurrences(string, subString, allowOverlapping) { //From http://stacko
     return (n);
 }
 
+function rA(find, replace, str) { //ReplaceAll
+  return str.replace(new RegExp(find, 'g'), replace);
+}
+
+function highlight(text, word){
+    var cleaned = rA(">","&gt;",rA("<","&lt;",text)).toLowerCase();
+    
+    var arry = cleaned.split(". ")
+    var total = ""
+    
+    prev = true
+    
+    for(var i = 0; i < arry.length; i++){
+        if(occurrences(arry[i], word.toLowerCase()) != 0){
+            if (arry[i+1] != undefined){
+                if(occurrences(arry[i+1], word.toLowerCase()) != 0){
+                    total += rA(word.toLowerCase(), "<span class='highlight'>"+word.toLowerCase()+"</span>", $.trim(arry[i]))+". "
+                    continue
+                } 
+            }
+            total += rA(word.toLowerCase(), "<span class='highlight'>"+word.toLowerCase()+"</span>", $.trim(arry[i])) + " <b>...</b> "
+            
+        }
+   }
+    
+    return total;
+}
+
 function devReady() {
     console.log("DEVICE IS READY")
     
@@ -83,6 +111,8 @@ function success(entries) {
 function search() {
     var ele = $("#seconddir option:selected")
     
+    $("#resultsbox .panel-body").html("")
+    
     var path= ele.val()
     if(ele.attr("isfile") == "true"){
         var isfile = true;   
@@ -128,7 +158,9 @@ function search() {
 
                         if (num != 0) {
                             $("#resultsbox .resulttext").text("The word " + word + " was found " + num + " times in the file located at " + path)
-                             $("#resultsbox .panel").removeClass("panel-danger").addClass("panel-success")
+                            $("#resultsbox .panel").removeClass("panel-danger").addClass("panel-success")
+                             
+                             
                         } else {
                             $("#resultsbox .resulttext").text("The word " + word + " was not found in the file located at " + path)
                             $("#resultsbox .panel").removeClass("panel-success").addClass("panel-danger")
@@ -160,6 +192,7 @@ function search() {
                 var totalinstances = 0;
                 var filelist = []
                 var results = []
+                var texts = []
 
                 var done = 0;
                 
@@ -185,6 +218,8 @@ function search() {
 
                             if (typeof evt.target.result == "string") {
                                 var num = occurrences(evt.target.result.toLowerCase(), word.toLowerCase(), false)
+                                
+                                
 
                                 console.log(num)
 
@@ -193,6 +228,11 @@ function search() {
                                     totalinstances += num
                                     filelist.push(file.name);
                                     results.push(num)
+                                    var text = highlight(evt.target.result, word)
+                                    
+                                    $("#resultsbox .panel .panel-body").append('<div class="text text1"><b class="name">'+file.name+':</b> <span class="num">'+num+'</span> occurences.<div class="hiddentext">'+text+'</div><br>')
+                                    $(".hiddentext").hide()
+                                    
                                 }
 
                                 done += 1;
@@ -203,23 +243,26 @@ function search() {
                                     console.log(totalfiles, totalinstances, filelist, results)
 
                                     if (totalinstances == 0) {
-                                        $("#resultsbox .resulttext").text("The word " + word + " was not found in any of the " + entries.length + " files located at " + path)
+                                        $("#resultsbox .resulttext").prepend("The word " + word + " was not found in any of the " + entries.length + " files located at " + path)
                                         $("#resultsbox .panel").removeClass("panel-success").addClass("panel-danger")
                                     } else if (totalfiles == 1) {
-                                        $("#resultsbox .resulttext").text("The word " + word + " was found one file, " + filelist[0] + ", " + totalinstances + " times. None of the other " + (entries.length - 1) + " files located at " + path + " contained it.")
+                                        $("#resultsbox .resulttext").prepend("The word " + word + " was found one file, " + filelist[0] + ", " + totalinstances + " times. None of the other " + (entries.length - 1) + " files located at " + path + " contained it.")
                                         $("#resultsbox .panel").removeClass("panel-danger").addClass("panel-success")
                                     } else if (totalfiles > 1) {
-                                        $("#resultsbox .resulttext").html("The word " + word + " was found a total of " + totalinstances + " times in " + totalfiles + " files as shown below:<br/>")
+                                        $("#resultsbox .resulttext").prepend("The word " + word + " was found a total of " + totalinstances + " times in " + totalfiles + " files as shown below:<br/>")
                                         $("#resultsbox .panel").removeClass("panel-danger").addClass("panel-success")
                                         
                                         
-                                        for (i = 0; i < filelist.length; i++) {
+                                        /*for (i = 0; i < filelist.length; i++) {
                                             $("#resultsbox .resulttext").append("<b>" + filelist[i] + ":</b> " + results[i] + " instances. <br/>")
                                             $("#resultsbox .panel").removeClass("panel-failure").addClass("panel-success")
-                                        }
+                                        }*/
                                     }
 
                                     $("#results").prepend($("#resultsbox").html())
+                                    $(".text").click(function(ele){
+                                        $(".hiddentext",this).slideToggle()  
+                                    })
                                 }
 
 

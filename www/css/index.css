@@ -28,3 +28,7 @@ html,body{
 #dirsel{
     text-align: center;
 }
+
+.highlight{
+    background-color: yellow;   
+}
